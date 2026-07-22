@@ -1,6 +1,6 @@
 # Hi-C Sequencing Depth Requirements
 
-### Code accompanying the paper
+### Code and data accompanying the paper
 
 **"Systematic assessment of sequencing depth requirements for Hi-C-derived metrics"**
 
