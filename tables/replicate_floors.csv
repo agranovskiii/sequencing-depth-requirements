@@ -1,0 +1,10 @@
+family,metric,biological,technical
+compartments,E1 Pearson (%),94.35,98.33
+compartments,E1 Spearman (%),94.85,98.19
+compartments,E1 sign agreement (%),93.35,96.97
+compartments,comp. strength CV (%),6.11,0.44
+insulation,insulation Pearson (%),82.65,97.01
+insulation,boundary recall (%),65.96,85.9
+insulation,boundary F1 (%),65.6,85.9
+insulation,boundary count CV (%),8.75,0.35
+insulation,boundary strength CV (%),10.92,0.3

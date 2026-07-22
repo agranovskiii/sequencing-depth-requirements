@@ -1,0 +1,52 @@
+Bootstrap: docker
+From: continuumio/miniconda3:23.5.2-0
+
+%labels
+    Author AG
+    Description "Hi-C analysis container with cooltools/fanc/pybedtools/"
+
+%environment
+    # add conda to PATH
+    export PATH=/opt/conda/bin:$PATH
+    export LC_ALL=C
+    export LANG=C
+
+%post
+    # avoid interactive apt prompts
+    export DEBIAN_FRONTEND=noninteractive
+
+    # --- system packages ---
+    apt-get update
+    apt-get install -y \
+        build-essential \
+        git \
+        wget \
+        curl \
+        ca-certificates
+    rm -rf /var/lib/apt/lists/*
+
+    # --- conda ---
+    conda update -n base -c defaults conda -y
+
+    # --- main Hi-C stack ---
+    conda install -y -c conda-forge -c bioconda \
+        python=3.10 \
+        cooltools \
+        cooler \
+        bioframe \
+        jupyterlab \
+        seaborn \
+        ipykernel \
+        bedtools \
+        pybedtools 
+
+
+    # cleanup
+    conda clean -afy
+
+    echo "Done."
+
+%runscript
+    # default action: open a shell
+    exec /bin/bash
+
