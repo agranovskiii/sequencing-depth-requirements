@@ -30,6 +30,8 @@ Raw `.fastq` files: [GSE163666](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?a
 
 Intermediate files are included in `data/`, so the analysis notebooks can be re-run without reprocessing raw `.mcool` files.
 
+/data/ folder excluding .mcool files available at Zenodo https://doi.org/10.5281/zenodo.21498561
+
 ---
 
 ## Environment
@@ -46,7 +48,7 @@ singularity exec hic-tools.sif jupyter lab
 ## Repository Structure
 
 ```
-├── data/
+├── data/ 
 │   ├── compartments/            # E1 trackss per depth
 │   ├── datasets/                # Subsampled .mcool metadata and sample tables
 │   ├── insulation/              # Insulation profiles and boundary calls per depth
