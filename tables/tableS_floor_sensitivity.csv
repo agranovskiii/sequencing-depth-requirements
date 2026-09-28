@@ -1,0 +1,19 @@
+metric,floor definition,floor (%),threshold (M read pairs)
+loop density,mean,11.19,7.2
+loop density,n-1 weighted,16.86,2.2
+loop density,median,10.13,9.0
+loop density,ESC4DN-DSG-DpnII,5.47,32.3
+loop density,HFFc6-DSG-DdeI-DpnII,8.44,13.5
+loop density,HFFc6-DSG-DpnII,12.45,5.5
+loop density,IMR90,25.68,<1
+loop density,k562,3.31,76.4
+loop density,kbm7,11.82,6.3
+loop size,mean,6.58,20.2
+loop size,n-1 weighted,12.75,4.4
+loop size,median,4.0,41.2
+loop size,ESC4DN-DSG-DpnII,3.87,42.5
+loop size,HFFc6-DSG-DdeI-DpnII,1.37,203.5
+loop size,HFFc6-DSG-DpnII,4.12,39.9
+loop size,IMR90,23.06,<1
+loop size,k562,1.57,160.6
+loop size,kbm7,5.48,28.1

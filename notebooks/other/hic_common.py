@@ -29,9 +29,11 @@ import cooltools
 import bioframe
 
 
+
+
 # ---------------------------------------------------------------- folders ---
 
-RAW_ROOT = Path("../raw")                       # mcool files
+RAW_ROOT = Path("../data")                       # mcool files
 DATA_ROOT = Path("../data")
 COMPARTMENT_CACHE = DATA_ROOT / "compartments"  # E1 and saddle per cooler
 INSULATION_CACHE = DATA_ROOT / "insulation"     # insulation table per cooler
@@ -80,8 +82,16 @@ LIBRARIES = [
 # saddle plots in figure 4
 SADDLE_LIBRARY = ("U54-ESC4DN-DSG-DpnII-20190530-R1-T1", "SRR13601502")
 
+# Biological replicate groups (Table S6).
+# One run per independent biological experiment: a separately prepared library for
+# Akgol Oksuz et al. (R1, R2, R3) and a separate GEO sample for Rao et al.; where
+# several runs came from one sample, the first listed (also the largest) is used.
+# Only replicates of at least 100M read pairs (SRA spots) are included. Excluded:
+# HMEC SRR1658681-SRR1658685 (9-20M; group dropped, one deep run left),
+# IMR90 SRR1658674 (26M), K562 SRR1658695/97/99, SRR1658701 (39-41M),
+# KBM7 SRR1658706 (96M).
 BIO_GROUPS = {
-        "ESC4DN-DSG-DpnII": [
+    "ESC4DN-DSG-DpnII": [
         ("U54-ESC4DN-DSG-DpnII-20190530-R1-T1", "SRR13601502"),
         ("U54-ESC4DN-DSG-DpnII-20190530-R2-T1", "SRR13601511"),
     ],
@@ -93,38 +103,19 @@ BIO_GROUPS = {
         ("U54-HFFc6-DSG-DpnII-20180319-R1-T1", "SRR13601592"),
         ("U54-HFFc6-DSG-DpnII-20190102-R2-T1", "SRR13601599"),
     ],
-    "IMR90": [                                       
-        ("IMR90", "SRR1658672"), ("IMR90", "SRR1658673"),
-        ("IMR90", "SRR1658674"), ("IMR90", "SRR1658675"),
-        ("IMR90", "SRR1658676"),  
-        ("IMR90", "SRR1658677"), ("IMR90", "SRR1658678"),
+    "IMR90": [
+        ("IMR90", "SRR1658672"), ("IMR90", "SRR1658673"), ("IMR90", "SRR1658675"),
+        ("IMR90", "SRR1658676"), ("IMR90", "SRR1658677"), ("IMR90", "SRR1658678"),
         ("IMR90", "SRR1658679"),
     ],
-    "HMEC": [                                        
-        ("HMEC", "SRR1658680"),  
-        ("HMEC", "SRR1658681"), ("HMEC", "SRR1658682"),
-        ("HMEC", "SRR1658683"), ("HMEC", "SRR1658684"),
-        ("HMEC", "SRR1658685"),
-    ],
-    "k562": [                                       
+    "k562": [
         ("k562", "SRR1658693"), ("k562", "SRR1658694"),
-        ("k562", "SRR1658695"),    
-        ("k562", "SRR1658697"),    
-        ("k562", "SRR1658699"),    
-        ("k562", "SRR1658701"),    
     ],
-    "kbm7": [                                       
-        ("kbm7", "SRR1658703"),
-        ("kbm7", "SRR1658705"),    
-        ("kbm7", "SRR1658706"), ("kbm7", "SRR1658707"),
-        ("kbm7", "SRR1658708"),    
+    "kbm7": [
+        ("kbm7", "SRR1658703"), ("kbm7", "SRR1658705"),
+        ("kbm7", "SRR1658707"), ("kbm7", "SRR1658708"),
     ],
-    "HUVEC": [                                     
-        ("HUVEC", "SRR1658709"),   
-        ("HUVEC", "SRR1658712"),
-        ("HUVEC", "SRR1658714"),  
-        ("HUVEC", "SRR1658715"),
-    ]}
+}
 
 TECH_GROUPS = {
     "U54-ESC4DN-DSG-DpnII-20190530-R1-T1": [
@@ -374,16 +365,17 @@ def bins_by_chrom(positions, resolution):
 
 
 def count_matched(first, second, tol_bins):
-    '''How many boundaries of the first set have a partner in the second set.'''
+    '''How many boundaries of the first set have a partner in the second set
+    within tol_bins bins (nearest neighbour, vectorized).'''
     matched = 0
     for chrom, positions in first.items():
         other = second.get(chrom)
         if other is None or len(other) == 0:
             continue
-        for position in positions:
-            nearest = np.min(np.abs(other - position))
-            if nearest <= tol_bins:
-                matched += 1
+        idx = np.searchsorted(other, positions)
+        left = np.abs(positions - other[np.clip(idx - 1, 0, len(other) - 1)])
+        right = np.abs(other[np.clip(idx, 0, len(other) - 1)] - positions)
+        matched += int(np.sum(np.minimum(left, right) <= tol_bins))
     return matched
 
 
